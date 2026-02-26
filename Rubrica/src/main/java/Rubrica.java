@@ -5,7 +5,6 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class Rubrica extends JFrame implements ActionListener {
 
     List<Contatto> contacts = new ArrayList<>();
@@ -14,14 +13,18 @@ public class Rubrica extends JFrame implements ActionListener {
     JList<Contatto> rubrica = new JList<>(modello);
     JScrollPane scroll = new JScrollPane(rubrica);
 
-
     JButton aggiungi = new JButton("Aggiungi");
     JButton modifica = new JButton("Modifica");
     JButton elimina = new JButton("Elimina");
 
-
+    String path = "src/main/resources/rubrica.csv";
+    FileManager fileManager = new FileManager(path);
 
     Rubrica() {
+        // caricamento dei dati dal file csv all'avvio
+        contacts = fileManager.caricaContatti();
+        modello.addAll(contacts);
+
         setTitle("Rubrica");
         setBounds(20, 30, 500, 700);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -29,7 +32,7 @@ public class Rubrica extends JFrame implements ActionListener {
         // Layout principale
         setLayout(new BorderLayout());
 
-        // ---------- PANNELLO SUPERIORE ----------
+        // pannello superiore
         JPanel pannelloSup = new JPanel();
         pannelloSup.setLayout(new BorderLayout());
         pannelloSup.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -51,7 +54,7 @@ public class Rubrica extends JFrame implements ActionListener {
 
         pannelloSup.add(pannelloBottoni, BorderLayout.NORTH);
 
-        // ----------- BARRA DI RICERCA ---------------
+        // barra di ricerca
         JPanel pannelloSearch = new JPanel(new BorderLayout());
         pannelloSearch.setBorder(BorderFactory.createEmptyBorder(5, 0, 0, 0));
 
@@ -63,8 +66,7 @@ public class Rubrica extends JFrame implements ActionListener {
 
         add(pannelloSup, BorderLayout.NORTH);
 
-
-        // ---------- LISTA CONTATTI (PANNELLO INFERIORE) ----------
+        // lista contatti
         JPanel pannelloInf = new JPanel(new BorderLayout());
         pannelloInf.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
@@ -73,13 +75,14 @@ public class Rubrica extends JFrame implements ActionListener {
 
         add(pannelloInf, BorderLayout.CENTER);
 
-        // ----------- RENDERER GRAFICO ------------
+        // renderer personalizzato per le celle della lista
         this.rubrica.setCellRenderer(new DefaultListCellRenderer() {
             @Override
             public Component getListCellRendererComponent(JList<?> list, Object value,
-                                                          int index, boolean isSelected, boolean cellHasFocus) {
+                    int index, boolean isSelected, boolean cellHasFocus) {
 
-                JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected,
+                        cellHasFocus);
                 Contatto c = (Contatto) value;
                 label.setText(c.getNome() + " " + c.getCognome() + " - " + c.getNumero());
                 label.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.LIGHT_GRAY));
@@ -90,7 +93,7 @@ public class Rubrica extends JFrame implements ActionListener {
 
         rubrica.setFixedCellHeight(30);
 
-        // ---------- FILTRO RICERCA ----------
+        // filtro di ricerca
         searchField.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
             private void aggiornaFiltro() {
                 String text = searchField.getText().toLowerCase();
@@ -104,17 +107,24 @@ public class Rubrica extends JFrame implements ActionListener {
                     }
                 }
             }
-            public void insertUpdate(javax.swing.event.DocumentEvent e) { aggiornaFiltro(); }
-            public void removeUpdate(javax.swing.event.DocumentEvent e) { aggiornaFiltro(); }
-            public void changedUpdate(javax.swing.event.DocumentEvent e) { aggiornaFiltro(); }
+
+            public void insertUpdate(javax.swing.event.DocumentEvent e) {
+                aggiornaFiltro();
+            }
+
+            public void removeUpdate(javax.swing.event.DocumentEvent e) {
+                aggiornaFiltro();
+            }
+
+            public void changedUpdate(javax.swing.event.DocumentEvent e) {
+                aggiornaFiltro();
+            }
         });
 
         setVisible(true);
     }
 
-
-
-    public void aggiungi(){
+    public void aggiungi() {
         Contatto nuovo = contattoConUtente(null);
         if (nuovo != null) {
             contacts.add(nuovo);
@@ -130,10 +140,24 @@ public class Rubrica extends JFrame implements ActionListener {
         }
     }
 
-    public void modifica(){
+    private boolean numeroValido(String numero) {
+        if (numero == null || numero.isEmpty()) {
+            return false;
+        }
+
+        for (int i = 0; i < numero.length(); i++) {
+            if (!Character.isDigit(numero.charAt(i))) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public void modifica() {
         int indexContact = this.rubrica.getSelectedIndex();
         if (indexContact != -1) {
-           Contatto contact =  this.contacts.get(indexContact);
+            Contatto contact = this.contacts.get(indexContact);
             contact = this.contattoConUtente(contact);
             contacts.set(indexContact, contact);
             contacts.sort((o1, o2) -> o1.getNome().compareToIgnoreCase(o2.getNome()));
@@ -148,7 +172,7 @@ public class Rubrica extends JFrame implements ActionListener {
         }
     }
 
-    public void elimina(){
+    public void elimina() {
         int indexContact = this.rubrica.getSelectedIndex();
         if (indexContact != -1) {
             this.contacts.remove(indexContact);
@@ -158,10 +182,11 @@ public class Rubrica extends JFrame implements ActionListener {
         }
     }
 
-    public Contatto contattoConUtente(Contatto contact){
-        //per creare un nuovo contatto se necessario
-        //usiamo un array per permettere la modifica del valore all'interno del listener
-        final Contatto[] nuovoContatto=new Contatto[1];
+    public Contatto contattoConUtente(Contatto contact) {
+        // per creare un nuovo contatto se necessario
+        // usiamo un array per permettere la modifica del valore all'interno del
+        // listener
+        final Contatto[] nuovoContatto = new Contatto[1];
 
         JTextField nomeField = new JTextField();
         JTextField cognomeField = new JTextField();
@@ -179,8 +204,8 @@ public class Rubrica extends JFrame implements ActionListener {
         cognomeField.setBounds(120, 100, 250, 25);
         numeroField.setBounds(120, 140, 250, 25);
 
-        //se stiamo modificando un contatto esistente i campi saranno già compilati
-        if (contact != null){
+        // se stiamo modificando un contatto esistente i campi saranno già compilati
+        if (contact != null) {
             nomeField.setText(contact.getNome());
             cognomeField.setText(contact.getCognome());
             numeroField.setText(contact.getNumero());
@@ -214,15 +239,27 @@ public class Rubrica extends JFrame implements ActionListener {
         pannelloInserimento.add(numeroLabel);
         pannelloInserimento.add(numeroField);
 
-
         okBtn.addActionListener(e -> {
+            String nome = nomeField.getText().trim();
+            String cognome = cognomeField.getText().trim();
+            String numero = numeroField.getText().trim();
+
+            // Controllo numero
+            if (!numeroValido(numero)) {
+                JOptionPane.showMessageDialog(
+                        dialog,
+                        "Inserisci un numero di telefono valido (solo cifre).",
+                        "Errore",
+                        JOptionPane.ERROR_MESSAGE);
+                return; // blocca la chiusura del dialog
+            }
+
             if (contact == null) {
                 // Creo un nuovo contatto
                 nuovoContatto[0] = new Contatto(
                         nomeField.getText(),
                         cognomeField.getText(),
-                        numeroField.getText()
-                );
+                        numeroField.getText());
             } else {
                 // Modifico il contatto esistente
                 contact.setNome(nomeField.getText());
@@ -241,19 +278,22 @@ public class Rubrica extends JFrame implements ActionListener {
         dialog.setVisible(true);
 
         return contact == null ? nuovoContatto[0] : contact;
-        // se stiamo modificando, ritorniamo comunque il contatto esistente già aggiornato
+        // se stiamo modificando, ritorniamo comunque il contatto esistente già
+        // aggiornato
 
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         String command = e.getActionCommand();
-        switch(command){
+        switch (command) {
             case "Aggiungi":
                 aggiungi();
+                fileManager.salvaContatti(contacts);
                 break;
             case "Modifica":
                 modifica();
+                fileManager.salvaContatti(contacts);
                 break;
             case "Elimina":
                 int result = JOptionPane.showConfirmDialog(
@@ -261,22 +301,19 @@ public class Rubrica extends JFrame implements ActionListener {
                         "Sei sicuro di voler eliminare il contatto?",
                         "Conferma",
                         JOptionPane.YES_NO_OPTION,
-                        JOptionPane.QUESTION_MESSAGE
-                );
+                        JOptionPane.QUESTION_MESSAGE);
 
-                if (result ==JOptionPane.YES_OPTION ) {
+                if (result == JOptionPane.YES_OPTION) {
                     elimina();
+                    fileManager.salvaContatti(contacts);
                     JOptionPane.showMessageDialog(null,
                             "Contatto eliminato correttamente!",
                             "Conferma",
                             JOptionPane.INFORMATION_MESSAGE);
                 }
 
-
                 break;
         }
     }
 
-
 }
-
