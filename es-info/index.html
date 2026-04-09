@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Simulazione Verifica</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <main>
+        <h1>Registro Voti</h1>
+        
+        <!-- Contenitore degli studenti: lo useremo in CSS per il Flexbox -->
+        <section class="studenti-container">
+            <!-- Nota i data-attributes: data-nome e data-voto -->
+            <button class="btn-studente" data-nome="Marco" data-voto="7">Studente 1</button>
+            <button class="btn-studente" data-nome="Giulia" data-voto="4">Studente 2</button>
+            <button class="btn-studente" data-nome="Luca" data-voto="8">Studente 3</button>
+        </section>
+
+        <!-- Qui dentro JS scriverà l'esito -->
+        <div id="risultato">
+            <p>Clicca su uno studente per vedere l'esito.</p>
+        </div>
+    </main>
+    <script src="app.js"></script>
+</body>
+</html>

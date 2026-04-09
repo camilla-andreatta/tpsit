@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Task Manager Pro</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="main-layout">
+        <aside id="sidebar">
+            <h2>Nuova Task</h2>
+            <form id="task-form">
+                <input type="hidden" id="task-id">
+                
+                <div class="field">
+                    <label>Titolo Task *</label>
+                    <input type="text" id="title" placeholder="Cosa devi fare?">
+                    <small class="error-msg"></small>
+                </div>
+
+                <div class="field">
+                    <label>Priorità *</label>
+                    <div class="radio-group">
+                        <input type="radio" name="priority" value="Alta" id="p-alta"> <label for="p-alta">Alta</label>
+                        <input type="radio" name="priority" value="Bassa" id="p-bassa"> <label for="p-bassa">Bassa</label>
+                    </div>
+                    <small class="error-msg"></small>
+                </div>
+
+                <button type="submit" id="submit-btn">Aggiungi Task</button>
+            </form>
+        </aside>
+
+        <main id="content">
+            <header id="list-header">
+                <h2>Le mie Task</h2>
+                <div id="filter-bar">
+                    </div>
+            </header>
+            
+            <div id="tasks-container">
+                </div>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

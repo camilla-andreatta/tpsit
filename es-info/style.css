@@ -1,0 +1,33 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    margin-top: 50px;
+}
+
+.studenti-container {
+    background-color: #f0f0f0;
+    padding: 20px;
+    
+    /* ESERCIZIO CSS: */
+    /* 1. Attiva il flex model per questo contenitore */
+    /* Scrivi qui: */
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    /* 2. Allinea i bottoni orizzontalmente in modo che ci sia 
+          spazio uguale attorno a ciascuno (usa justify-content) */
+    /* Scrivi qui: */
+    
+}
+
+.btn-studente {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+#risultato {
+    margin-top: 30px;
+    font-size: 24px;
+    font-weight: bold;
+}
